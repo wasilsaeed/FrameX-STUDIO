@@ -33,7 +33,7 @@ export default function TeamPage() {
       </section>
       <section className="pp-team-grid section" aria-label="The people behind FrameX">{team.map((member, index) => <Reveal className="pp-team-profile" key={member.role}>
         {index === 0 ? <EditorRoleVisual /> : <OperationsRoleVisual />}
-        <div className="pp-team-profile-copy"><p className="pp-index">{index === 0 ? 'CREATIVE' : 'CLIENT + OPERATIONS'}</p><h2>{member.role}</h2><p className="pp-team-bio">{member.bio}</p><ul>{member.responsibilities.map(item => <li key={item}>{item}</li>)}</ul></div>
+        <div className="pp-team-profile-copy"><p className="pp-index">{index === 0 ? 'Ali Noshair' : 'Wasil Saeed'}</p><h2>{member.role}</h2><p className="pp-team-bio">{member.bio}</p><ul>{member.responsibilities.map(item => <li key={item}>{item}</li>)}</ul></div>
       </Reveal>)}</section>
       <section className="pp-team-connection" aria-labelledby="team-connection-heading"><Reveal><h2 id="team-connection-heading">Creative craft.<br />Clear communication.</h2></Reveal><Reveal><p>A considered edit and a clear review process keep your vision in focus. From first cut to final handoff, every decision supports the work.</p><div className="pp-handoff" aria-label="Our collaborative workflow"><span>Brief</span><i aria-hidden="true" /><span>Edit</span><i aria-hidden="true" /><span>Review</span><i aria-hidden="true" /><span>Deliver</span></div></Reveal></section>
     </div>
