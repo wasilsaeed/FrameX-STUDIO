@@ -1,0 +1,2 @@
+import{j as s,L as t,A as e}from"./index-D884mg5r.js";function a(){return s.jsxs("section",{className:"final-cta",children:[s.jsx("p",{className:"eyebrow",children:"AVAILABLE FOR SELECT PROJECTS"}),s.jsxs("h2",{children:["Your next great visual",s.jsx("br",{}),"starts here."]}),s.jsxs(t,{className:"button button-light",to:"/contact",children:["Let’s work together ",s.jsx(e,{})]})]})}export{a as C};
+//# sourceMappingURL=CTA-Bj3ok8H4.js.map

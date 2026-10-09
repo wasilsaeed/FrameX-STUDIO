@@ -11,6 +11,20 @@ npm run dev
 
 Create a production build with `npm run build`.
 
+Run only one dependency installation at a time. After cloning, `npm ci` installs
+the exact versions in `package-lock.json`; stop the dev server before using it
+to replace an interrupted installation. Once installed, use `npm run dev` without
+reinstalling on each start.
+
+## Browser regression check
+
+`node tests/browser-smoke.mjs http://localhost:5173` checks navigation, portfolio
+filtering, mobile navigation, and form validation, and fails on React errors.
+It requires an isolated Chrome instance launched with `--remote-debugging-port=9224`
+and its own temporary `--user-data-dir`. The same check can target a production
+preview on port 4173. It covers the scroll effect cleanup regression: never return
+the result of `window.scrollTo` from a React effect, since it can be a Promise.
+
 ## Updating content
 
 - Brand and contact details: `src/config/`
