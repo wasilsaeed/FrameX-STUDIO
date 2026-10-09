@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://framex-studio.nabeelsdeveloperteam.chatgpt.site/sitemap.xml

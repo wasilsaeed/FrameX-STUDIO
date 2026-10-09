@@ -1,0 +1,14 @@
+export const faqs = [
+  ['How can I start a project?', 'Send us a short brief through the project form. We’ll review the scope, ask any useful questions, and return with a tailored next step.'],
+  ['What editing services do you provide?', 'Video editing, commercial and social edits, color grading, photo retouching, product cleanup, and recurring post-production support.'],
+  ['What do you need before starting?', 'Your goals, source files, references, deliverables, deadline, and any existing brand guidelines. A rough brief is enough to begin the conversation.'],
+  ['Can you work with existing brand guidelines?', 'Yes. We can work within established visual systems, templates, tone, and delivery specifications.'],
+  ['How long do projects take?', 'Timelines depend on scope, source material, and feedback cycles. We confirm a realistic schedule before work begins.'],
+  ['How do quotations work?', 'Every quote is based on the actual scope, deliverables, complexity, and timeline. We do not publish one-size-fits-all pricing.'],
+  ['Do you offer recurring editing support?', 'Yes. Ongoing support can be structured around a recurring content calendar or reserved monthly production capacity.'],
+  ['How are revisions handled?', 'The agreed revision structure is documented in your proposal. Feedback is collected clearly and applied in organized review rounds.'],
+  ['How are files shared?', 'We can work with common secure cloud-transfer and review platforms. The exact workflow is confirmed during onboarding.'],
+  ['Which final formats can you deliver?', 'We deliver common web, social, presentation, and print-ready formats based on your channel requirements.'],
+  ['Can you work with agencies?', 'Yes. We can support agencies as a discreet white-label post-production partner.'],
+  ['How is client content handled?', 'Access is limited to the project workflow. Specific confidentiality or retention requirements can be agreed before work starts.'],
+];
