@@ -17,6 +17,8 @@
   line-height: 1.1;
   letter-spacing: -.045em;
 }
+.testimonials-sample-note { max-width: 32ch; margin: 0; color: var(--slate); font-size: 12px; line-height: 1.8; }
+.testimonial-quote-card figcaption > .testimonial-sample-label { color: var(--iris); font-size: 11px; }
 .testimonials-empty { padding-block: 44px; }
 .testimonials-empty .testimonials-heading { margin: 0; align-items: center; }
 .testimonials-empty .testimonials-heading h2 { font-size: clamp(24px, 2.2vw, 32px); }
@@ -83,7 +85,7 @@
 
 @media (max-width: 620px) {
   .testimonials-section { padding-block: 48px; }
-  .testimonials-heading { margin-bottom: 28px; }
+  .testimonials-heading { margin-bottom: 28px; flex-direction: column; align-items: flex-start; gap: 18px; }
   .testimonials-empty { padding-block: 36px; }
   .testimonials-empty .testimonials-heading { flex-direction: column; align-items: flex-start; gap: 18px; }
   .testimonials-empty-note { gap: 12px; }

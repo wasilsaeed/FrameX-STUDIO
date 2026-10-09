@@ -9,7 +9,7 @@ import { CTA } from '../components/common/CTA';
 import { Testimonials } from '../components/common/Testimonials';
 import { ProjectCard } from '../components/portfolio/ProjectCard';
 import { projects } from '../data/projects';
-import { clientTestimonials } from '../data/testimonials';
+import { clientTestimonials, sampleTestimonials } from '../data/testimonials';
 
 const capabilities = [
   { label: 'Video editing', code: '01 / EDIT', title: 'Find the story.\nKeep the attention.', copy: 'A considered cut turns your footage into something people stay with. From the first hook to the last frame.', detail: ['Story & pacing', 'Motion titles', 'Platform-ready cuts'], service: 'Video editing', image: '/media/creator-cuts.jpg', imageLabel: 'Story / Rhythm / Motion', finish: 'Picture edit → Final cut' },
@@ -127,7 +127,7 @@ export default function HomePage() {
         <div className="process-sequence">{steps.map(({ icon: Icon, ...step }, index) => <Reveal className="process-stage" key={step.title}><div className="process-rail"><span>0{index + 1}</span><i /><Icon aria-hidden="true" /></div><h3>{step.title}</h3><p>{step.copy}</p><span className="process-tag">{step.tag}</span></Reveal>)}</div>
         <Reveal className="process-handoff"><span><i /> Direct creative work. Clear client coordination.</span><Link to="/contact" className="text-link">Let’s discuss your brief <ArrowUpRight aria-hidden="true" /></Link></Reveal>
       </section>
-      <Testimonials records={clientTestimonials} />
+      <Testimonials records={clientTestimonials} sampleRecords={sampleTestimonials} />
       <CTA />
     </div>
   );

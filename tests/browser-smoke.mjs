@@ -8,6 +8,7 @@ const probe = process.argv.includes('--probe');
 const screenshots = process.argv.includes('--screenshots');
 const audit = process.argv.includes('--audit');
 const interactions = process.argv.includes('--interactions');
+const reviews = process.argv.includes('--reviews');
 // A new tab prevents cached console errors from an earlier run being replayed.
 const target = await fetch('http://127.0.0.1:9224/json/new?about:blank', { method: 'PUT' }).then(r => r.json());
 assert.ok(target, 'Start an isolated Chrome debugging session first');
@@ -61,7 +62,36 @@ try {
   await send('Page.navigate', { url: origin });
   await waitFor('document.querySelector("h1, h2") !== null');
   await new Promise(resolve => setTimeout(resolve, 1500));
-  if (screenshots) {
+  if (reviews) {
+    for(const width of [320,390,768,1440]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<600});
+      await send('Page.navigate',{url:origin});
+      await waitFor('document.querySelectorAll(".testimonial-sample-card").length === 3');
+      await evaluate('document.fonts.ready');
+      assert.equal(await evaluate('document.querySelectorAll(".testimonial-quote-card").length'),3);
+      assert.match(await evaluate('document.querySelector(".testimonials-sample-note").textContent'),/Not actual client testimonials/);
+      assert.deepEqual(await evaluate('[...document.querySelectorAll(".testimonial-sample-card figcaption > span")].map(element=>element.textContent)'),['Video & sound','Photo retouching','Client coordination']);
+      for(let index=0;index<3;index++) {
+        await evaluate(`document.querySelectorAll('.testimonial-sample-card')[${index}].scrollIntoView({block:'center',behavior:'instant'})`);
+        await waitFor(`getComputedStyle(document.querySelectorAll('.testimonial-sample-card')[${index}]).opacity === '1'`);
+        const card=await evaluate(`(() => { const element=document.querySelectorAll('.testimonial-sample-card')[${index}]; const label=element.querySelector('.testimonial-sample-label'); const rect=element.getBoundingClientRect(); return {left:rect.left,right:rect.right,quote:element.querySelector('blockquote').textContent,label:label.textContent,labelDisplay:getComputedStyle(label).display,labelVisible:label.getBoundingClientRect().height>0}; })()`);
+        assert.ok(card.left>=0 && card.right<=width+1,JSON.stringify(card));
+        assert.ok(card.quote.length>70);
+        assert.match(card.label,/Sample review · Illustrative only/);
+        assert.ok(card.labelDisplay!=='none' && card.labelVisible);
+      }
+      assert.ok(await evaluate('document.documentElement.scrollWidth<=innerWidth'));
+      await evaluate('window.scrollTo({top:document.querySelector(".testimonials-section").offsetTop-110,behavior:"instant"})');
+      await new Promise(resolve=>setTimeout(resolve,300));
+      if(width===390 || width===1440) {
+        const shot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+        await writeFile(`/private/tmp/framex-sample-reviews-${width}.png`,Buffer.from(shot.data,'base64'));
+      }
+      console.log(`PASS sample review content, visible disclosures, and layout: ${width}px`);
+    }
+    assert.deepEqual(errors,[],'Browser reported runtime errors');
+    console.log('PASS no browser runtime errors');
+  } else if (screenshots) {
     await evaluate('document.fonts.ready');
     console.log('FONTS', await evaluate('[...document.fonts].map(f => ({ family: f.family, status: f.status }))'));
     for (const [path, width, height, name] of [

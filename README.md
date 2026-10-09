@@ -32,6 +32,9 @@ responses; they do not verify live email delivery. `--screenshots` captures
 desktop and phone previews. Run browser checks sequentially so background tab
 animation throttling does not invalidate visual checks.
 
+Use `--reviews` to check all three sample cards and their visible disclosures at
+320, 390, 768, and 1440px, and capture the feedback section on desktop and mobile.
+
 ## Design and conversion flow
 
 The homepage presents a branded finishing-suite hero, a six-concept horizontal
@@ -44,8 +47,10 @@ accordions where useful. The header has Work, Services, Studio, and one project
 action. Team is also a primary navigation link; FAQ remains in the footer.
 
 `clientTestimonials` in `src/data/testimonials.ts` accepts genuine approved
-feedback. Until verified records are supplied, the homepage shows “Verified reviews
-coming soon,” not invented praise, names, or ratings. The Team page describes exactly
+feedback. The user-approved `sampleTestimonials` now provide three clearly labeled
+fictional examples; no real names, companies, ratings, or verification claims are used.
+Samples render only when no verified feedback exists, and disappear automatically
+when approved real reviews are supplied. The Team page describes exactly
 two roles: Editor and Client & Operations Lead. No unconfirmed personal identities
 are presented as staff.
 
