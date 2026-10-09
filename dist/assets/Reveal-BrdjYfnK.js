@@ -1,0 +1,2 @@
+import{r as i,j as r}from"./index-DcpFFqPW.js";import{h as n,i as s,p as a,m as u}from"./proxy-BSw-EKwp.js";function c(){!n.current&&s();const[e]=i.useState(a.current);return e}function m({children:e,className:o=""}){const t=c();return r.jsx(u.div,{className:o,initial:t?!1:{opacity:0,y:30},whileInView:t?void 0:{opacity:1,y:0},viewport:{once:!0,margin:"-80px"},transition:{duration:.7,ease:[.25,1,.5,1]},children:e})}export{m as R,c as u};
+//# sourceMappingURL=Reveal-BrdjYfnK.js.map

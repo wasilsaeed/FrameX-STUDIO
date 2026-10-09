@@ -1,9 +1,11 @@
 // Run against an isolated Chrome instance started with --remote-debugging-port=9224.
 // node tests/browser-smoke.mjs [http://localhost:5173] [--probe]
 import assert from 'node:assert/strict';
+import { writeFile } from 'node:fs/promises';
 
 const origin = process.argv[2] || 'http://localhost:5173';
 const probe = process.argv.includes('--probe');
+const screenshots = process.argv.includes('--screenshots');
 // A new tab prevents cached console errors from an earlier run being replayed.
 const target = await fetch('http://127.0.0.1:9224/json/new?about:blank', { method: 'PUT' }).then(r => r.json());
 assert.ok(target, 'Start an isolated Chrome debugging session first');
@@ -56,7 +58,31 @@ try {
   await send('Page.navigate', { url: origin });
   await waitFor('document.querySelector("h1, h2") !== null');
   await new Promise(resolve => setTimeout(resolve, 1500));
-  if (probe) {
+  if (screenshots) {
+    await evaluate('document.fonts.ready');
+    console.log('FONTS', await evaluate('[...document.fonts].map(f => ({ family: f.family, status: f.status }))'));
+    for (const [path, width, height, name] of [
+      ['/', 1440, 1050, 'desktop'], ['/', 390, 844, 'mobile'],
+      ['/work', 1440, 1050, 'work'], ['/contact', 1440, 1050, 'contact'],
+    ]) {
+      await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 600 });
+      await send('Page.navigate', { url: origin + path });
+      await waitFor('document.querySelector("h1") !== null');
+      await evaluate('document.fonts.ready');
+      await new Promise(resolve => setTimeout(resolve, 1800));
+      const shot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+      await writeFile(`/private/tmp/framex-${name}.png`, Buffer.from(shot.data, 'base64'));
+      console.log('SCREENSHOT', `/private/tmp/framex-${name}.png`);
+      console.log('LAYOUT', await evaluate('({width: innerWidth, documentWidth: document.documentElement.scrollWidth, heroHeight: document.querySelector(".home-hero")?.offsetHeight, brokenImages: [...document.images].filter(i=>i.loading!=="lazy" && i.complete && !i.naturalWidth).map(i=>i.src)})'));
+      if (name === 'desktop') {
+        await evaluate('window.scrollTo({top:document.querySelector(".home-work").offsetTop - 110,behavior:"instant"})');
+        await new Promise(resolve => setTimeout(resolve, 1200));
+        const detail = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+        await writeFile('/private/tmp/framex-selected-work.png', Buffer.from(detail.data, 'base64'));
+        console.log('SCREENSHOT /private/tmp/framex-selected-work.png');
+      }
+    }
+  } else if (probe) {
     console.log(JSON.stringify(await evaluate('({ text: document.body.innerText.slice(0,1200), scrollReturn: Object.prototype.toString.call(window.scrollTo({top:0,behavior:"instant"})) })'), null, 2));
     console.log(JSON.stringify({ errors }, null, 2));
   } else {
@@ -66,7 +92,7 @@ try {
       ['/about', 'Behind every great frame'], ['/team', 'Creative focus'],
       ['/contact', 'Let’s create something'], ['/', 'We don’t just edit'],
     ]) {
-      await evaluate(`document.querySelector('header nav a[href="${path}"]').click()`);
+      await evaluate(`document.querySelector('header a[href="${path}"]').click()`);
       await waitFor(`document.querySelector('h1')?.textContent.includes(${JSON.stringify(heading)})`);
       console.log(`PASS navigation ${path}`);
     }
@@ -87,6 +113,12 @@ try {
     await evaluate('document.querySelector(".contact-form button").click()');
     await waitFor('document.querySelectorAll("[role=alert]").length >= 4');
     console.log('PASS mobile navigation, layout and form validation');
+    for (const path of ['/', '/services', '/work', '/about', '/team', '/faq', '/work/midnight-drive', '/work/the-modern-muse']) {
+      await send('Page.navigate', { url: origin + path });
+      await waitFor('document.querySelector("h1") !== null');
+      assert.ok(await evaluate('document.documentElement.scrollWidth <= window.innerWidth'), `Mobile overflow on ${path}`);
+    }
+    console.log('PASS supporting pages fit mobile viewport');
     assert.deepEqual(errors, [], 'Browser reported runtime or React errors');
     console.log('PASS no browser runtime errors');
   }

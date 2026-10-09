@@ -8,9 +8,15 @@ import { team } from '../data/team';
 export default function TeamPage() {
   return <>
     <Seo title="Our Team" description="Meet the two-person creative and operations core behind FrameX Studio." />
-    <section className="page-hero team-hero"><p className="eyebrow">THE PEOPLE / TWO CORE STRENGTHS</p><h1>Creative focus.<br /><em>Human connection.</em></h1><p>A compact team built around two things clients need most: strong creative execution and clear project coordination.</p></section>
-    <section className="team-grid section">{team.map((member, index) => <Reveal className="team-card" key={member.role}><div className="team-image"><img src={member.image} alt={`${member.name}, ${member.role}`} /><span>0{index + 1} / FRAMEX STUDIO</span></div><p className="eyebrow">{member.role}</p><h2>{member.name}</h2><p>{member.bio}</p><ul>{member.responsibilities.map(item => <li key={item}>{item}</li>)}</ul></Reveal>)}</section>
-    <section className="team-bridge section"><Reveal><p className="eyebrow">HOW WE WORK TOGETHER</p><h2>One vision.<br />Two core strengths.</h2></Reveal><Reveal><p>The operations lead is the bridge between every client conversation and the creative production process—keeping requirements clear, feedback moving, and delivery organized.</p><p>The creative lead turns that clarity into focused visual work. The result is a smaller team with fewer handoffs and a more connected experience.</p><Link className="text-link" to="/contact">Start the conversation <ArrowUpRight /></Link></Reveal></section>
+    <div className="studio-team">
+      <section className="page-hero editorial-hero team-hero"><p className="eyebrow">THE PEOPLE</p><h1>Creative focus.<br /><em>Human connection.</em></h1><div className="editorial-hero-copy"><p>Two core roles. One connected workflow. Direct creative attention and a clear point of contact from brief to delivery.</p><Link className="text-link" to="/contact">Start a conversation <ArrowUpRight /></Link></div></section>
+      <section className="team-grid section" aria-label="Our two core team profiles">{team.map((member, index) => {
+        const isPreview = /^\[.*\]$/.test(member.name);
+        const title = isPreview ? (index === 0 ? 'Creative lead' : 'Operations lead') : member.name;
+        return <Reveal className="team-card" key={member.role}><div className="team-image"><img src={member.image} alt={isPreview ? `Preview portrait for the ${title.toLowerCase()} profile` : `${member.name}, ${member.role}`} loading="lazy" /><span>{isPreview ? 'PROFILE PREVIEW' : `0${index + 1} / FRAMEX STUDIO`}</span></div><div className="team-profile-copy"><p className="eyebrow">{member.role}</p><h2>{title}</h2><p>{member.bio}</p><ul>{member.responsibilities.map(item => <li key={item}>{item}</li>)}</ul>{isPreview && <p className="profile-preview-note">Profile name and portrait to be confirmed.</p>}</div></Reveal>;
+      })}</section>
+      <section className="team-workflow"><div><p className="eyebrow">A CONNECTED PROCESS</p><h2>Clear brief.<br />Considered execution.</h2></div><div><p>Your operations lead handles scope, feedback, and delivery. Your creative lead shapes the edit, color, and finish.</p><p>Fewer handoffs. A shared understanding of what the work needs to do.</p><Link className="text-link" to="/contact">Tell us what you’re making <ArrowUpRight /></Link></div></section>
+    </div>
     <CTA />
   </>;
 }

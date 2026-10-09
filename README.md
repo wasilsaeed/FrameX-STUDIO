@@ -36,6 +36,16 @@ the result of `window.scrollTo` from a React effect, since it can be a Promise.
 
 All portfolio items are intentionally labeled **Concept / Demo Work**. Replace images and project data before presenting real client work.
 
+## Artwork and local media
+
+The redesigned site serves its photography from `public/media/` for reliable,
+fast page loads. `scripts/download-media.mjs` records the stock reference sources.
+The cinematic automotive hero at `public/media/midnight-drive.jpg` was created
+with the built-in image generation tool. Its full creative prompt and provenance
+are saved in `public/media/hero-artwork.json`. It is illustrative concept artwork.
+Interactive color comparisons use one photo with explicitly labeled CSS color
+treatments; they are not presented as completed client retouching.
+
 ## Contact form and Vercel
 
 The frontend validates inquiries with Zod and React Hook Form. `api/contact.ts` validates again server-side, applies basic IP rate limiting, blocks a honeypot field, and sends email through Resend.
