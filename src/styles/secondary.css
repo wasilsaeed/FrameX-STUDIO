@@ -50,10 +50,12 @@
 .studio-principle h3 { font-size: 20px; line-height: 1.3; letter-spacing: -.025em; margin: 20px 0 12px; }
 .studio-principle p { margin: 0; color: var(--slate); font-size: 14px; line-height: 1.7; }
 
-.studio-team .team-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding-top: 48px; padding-bottom: 72px; }
+.studio-team .team-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding-top: 48px; padding-bottom: 32px; }
 .team-card { min-width: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--charcoal); overflow: hidden; }
 .team-image { position: relative; overflow: hidden; }
 .team-image img { height: auto; aspect-ratio: 16 / 10; object-position: center 30%; filter: grayscale(1); }
+.team-image img { transition: transform .7s var(--ease), filter .5s; }
+.team-card:hover .team-image img { transform: scale(1.035); filter: grayscale(.35); }
 .team-image > span { position: absolute; left: 16px; bottom: 16px; background: rgba(11, 11, 15, .82); border: 1px solid rgba(245, 243, 239, .18); border-radius: 6px; padding: 6px 10px; font-size: 12px; }
 .team-profile-copy { padding: 28px; }
 .team-role { color: var(--slate); font-size: 13px; line-height: 1.6; margin-bottom: 8px; }
@@ -62,6 +64,9 @@
 .team-profile-copy ul { display: flex; flex-wrap: wrap; gap: 8px 20px; list-style: none; padding: 20px 0 0; margin: 0; border-top: 1px solid var(--line); }
 .team-profile-copy li { color: var(--ivory); font-size: 14px; line-height: 1.5; }
 .team-profile-copy > .profile-preview-note { font-size: 12px !important; margin: 20px 0 0 !important; }
+.team-bridge-note { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; gap: 32px; margin: 0 var(--pad) 72px; padding: 28px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.team-bridge-note h2 { margin: 0; font-size: 28px; line-height: 1.2; letter-spacing: -.035em; }
+.team-bridge-note p { margin: 0; max-width: 54ch; color: var(--slate); font-size: 15px; line-height: 1.75; }
 
 .contact-page { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); align-items: start; gap: 64px; padding: 152px var(--pad) 72px; }
 .contact-intro, .contact-form-shell { min-width: 0; }
@@ -151,10 +156,12 @@
   .studio-principle-grid { grid-template-columns: 1fr; }
   .studio-principle { padding: 24px; }
   .studio-principle h3 { margin-top: 16px; }
-  .studio-team .team-grid { padding-top: 32px; padding-bottom: 48px; gap: 20px; }
+  .studio-team .team-grid { padding-top: 32px; padding-bottom: 24px; gap: 20px; }
   .team-profile-copy { padding: 24px; }
   .team-profile-copy h2 { font-size: 24px; }
   .team-profile-copy ul { display: grid; gap: 8px; }
+  .team-bridge-note { grid-template-columns: 1fr; gap: 16px; margin-bottom: 48px; padding: 24px; }
+  .team-bridge-note h2 { font-size: 26px; }
   .contact-page { grid-template-columns: 1fr; gap: 32px; padding-top: 116px; padding-bottom: 48px; }
   .contact-intro .eyebrow { margin-bottom: 16px; }
   .contact-intro > .contact-next-step { margin-top: 24px; padding-top: 20px; }
@@ -183,6 +190,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .team-image img { transition: none; }
+  .team-card:hover .team-image img { transform: none; }
   .service-card-details summary svg, .contact-extra summary svg, .faq-item { transition: none; }
   .contact-form .spin { animation: none; }
 }

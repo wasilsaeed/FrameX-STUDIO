@@ -88,6 +88,11 @@ try {
         const detail = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
         await writeFile('/private/tmp/framex-selected-work.png', Buffer.from(detail.data, 'base64'));
         console.log('SCREENSHOT /private/tmp/framex-selected-work.png');
+        await evaluate('window.scrollTo({top:document.querySelector(".testimonials-section").offsetTop - 110,behavior:"instant"})');
+        await new Promise(resolve => setTimeout(resolve, 1200));
+        const closing = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+        await writeFile('/private/tmp/framex-home-closing.png', Buffer.from(closing.data, 'base64'));
+        console.log('SCREENSHOT /private/tmp/framex-home-closing.png');
       }
     }
   } else if (audit || interactions) {
@@ -107,6 +112,13 @@ try {
         assert.ok(layout.documentWidth <= width, `${path} overflows at ${width}px`);
         assert.deepEqual(layout.broken, [], `${path}: broken image`);
         assert.ok(layout.buttons.every(b => b.height >= 47.9 && b.radius === '10px'), `${path}: inconsistent button size or radius`);
+        if (path === '/') {
+          assert.equal(await evaluate('document.querySelectorAll(".home-projects .project-card").length'),3);
+          assert.ok(await evaluate('document.querySelector(".testimonials-section") !== null'));
+          if(await evaluate('document.querySelector(".testimonial-preview-panel") !== null')) assert.equal(await evaluate('document.querySelectorAll(".testimonial-quote-card").length'),0,'Do not mix placeholders with published reviews');
+          assert.ok(await evaluate('document.querySelector("header nav a[href=\\"/team\\"]") !== null'));
+        }
+        if(path === '/team') assert.equal(await evaluate('document.querySelectorAll(".team-card").length'),2);
         if (width === 1440) summaries.push({path, words:layout.words});
       }
       console.log(`PASS all routes: ${width}px, images, headings and buttons`);
@@ -176,6 +188,7 @@ try {
     for (const [path, heading] of [
       ['/services', 'Craft where it'], ['/work', 'A better finish'],
       ['/about', 'A clearer'],
+      ['/team', 'Creative focus'],
       ['/contact', 'Let’s create'], ['/', 'We don’t just edit'],
     ]) {
       await evaluate(`document.querySelector('header a[href="${path}"]').click()`);

@@ -7,5 +7,6 @@ import './styles/editorial.css';
 import './styles/chrome.css';
 import './styles/secondary.css';
 import './styles/portfolio.css';
+import './styles/testimonials.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><MotionConfig reducedMotion="user"><App /></MotionConfig></React.StrictMode>);

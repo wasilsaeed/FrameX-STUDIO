@@ -21,6 +21,7 @@ export default function TeamPage() {
           <div className="team-profile-copy"><p className="team-role">{member.role}</p><h2>{title}</h2><p>{member.bio}</p><ul>{member.responsibilities.slice(0, 3).map(item => <li key={item}>{item}</li>)}</ul>{isPreview && <p className="profile-preview-note">Name and portrait to be confirmed.</p>}</div>
         </Reveal>;
       })}</section>
+      <section className="team-bridge-note" aria-labelledby="team-bridge-heading"><Reveal><h2 id="team-bridge-heading">One vision.<br />Two core strengths.</h2></Reveal><Reveal><p>Creative direction and clear coordination, together. Our operations lead connects your brief, feedback, and delivery with the creative process.</p></Reveal></section>
     </div>
     <CTA />
   </>;

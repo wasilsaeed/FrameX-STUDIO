@@ -4,7 +4,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { Logo } from '../common/Logo';
 
 const links = [
-  ['Work', '/work'], ['Services', '/services'], ['Studio', '/about'],
+  ['Work', '/work'], ['Services', '/services'], ['Studio', '/about'], ['Team', '/team'],
 ];
 
 export function Header() {

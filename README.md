@@ -34,12 +34,18 @@ animation throttling does not invalidate visual checks.
 
 ## Design and conversion flow
 
-The homepage has four focused sections: offer, two selected concepts, three
-service choices, and a three-step process. Repeated studio pitches, homepage
+The homepage has a cinematic offer, three highlighted concepts, three
+service choices, a three-step process, and a testimonial section. Repeated studio pitches, homepage
 FAQs, oversized decorative CTAs, and duplicate project galleries were removed.
 Work retains all twelve concepts; supporting pages keep details behind closed
 accordions where useful. The header has Work, Services, Studio, and one project
-action. Team and FAQ remain reachable from the footer and relevant pages.
+action. Team is also a primary navigation link; FAQ remains in the footer.
+
+`clientTestimonials` in `src/data/testimonials.ts` accepts genuine approved
+feedback. Until verified records are supplied, the homepage shows a clearly
+labeled testimonial preview, not invented praise or ratings. The Team page
+retains exactly two profiles and the “One vision. Two core strengths.” bridge;
+names and portrait previews remain identified until confirmed.
 
 Shared controls use one 48px/10px-radius button system. `index.css` owns design
 tokens and shared primitives; `editorial.css`, `chrome.css`, `secondary.css`, and

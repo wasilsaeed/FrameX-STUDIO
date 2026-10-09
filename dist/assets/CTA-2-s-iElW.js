@@ -1,2 +1,0 @@
-import{k as a,L as e,A as t}from"./index-Bb0RKrtp.js";import{R as r}from"./Reveal-Dw4he7Vf.js";function n(){return a.jsx("section",{className:"final-cta","aria-labelledby":"project-cta-heading",children:a.jsxs(r,{className:"cta-inner",children:[a.jsx("h2",{id:"project-cta-heading",children:"Your next frame starts here."}),a.jsxs(e,{className:"button",to:"/contact",children:["Start a project ",a.jsx(t,{size:18,"aria-hidden":"true"})]})]})})}export{n as C};
-//# sourceMappingURL=CTA-2-s-iElW.js.map
