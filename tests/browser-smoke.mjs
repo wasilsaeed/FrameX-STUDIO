@@ -9,6 +9,7 @@ const screenshots = process.argv.includes('--screenshots');
 const audit = process.argv.includes('--audit');
 const interactions = process.argv.includes('--interactions');
 const reviews = process.argv.includes('--reviews');
+const teamCopy = process.argv.includes('--team-copy');
 // A new tab prevents cached console errors from an earlier run being replayed.
 const target = await fetch('http://127.0.0.1:9224/json/new?about:blank', { method: 'PUT' }).then(r => r.json());
 assert.ok(target, 'Start an isolated Chrome debugging session first');
@@ -62,7 +63,42 @@ try {
   await send('Page.navigate', { url: origin });
   await waitFor('document.querySelector("h1, h2") !== null');
   await new Promise(resolve => setTimeout(resolve, 1500));
-  if (reviews) {
+  if (teamCopy) {
+    const headcountCopy = /(?:two|2)[ -]+(?:person|people|roles|connected roles|core (?:team roles|strengths))|small[, ]+(?:connected )?team|one shared timeline/i;
+    const primaryRoutes = ['/', '/about', '/team', '/contact'];
+    const supportingRoutes = ['/services', '/work', '/faq', '/privacy', '/terms', '/404', ...['midnight-drive', 'the-modern-muse', 'pureform', 'city-after-dark', 'creator-cuts', 'timeless-spaces', 'motion-theory', 'portrait-series', 'momentum', 'studio-essentials', 'frame-by-frame', 'golden-hour'].map(slug => '/work/' + slug)];
+    for (const width of [320, 390, 768, 1440]) {
+      await send('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 600 });
+      for (const path of width === 1440 ? [...primaryRoutes, ...supportingRoutes] : primaryRoutes) {
+        await send('Page.navigate', { url: origin + path });
+        await waitFor('document.querySelector("h1") !== null');
+        await evaluate('document.fonts.ready');
+        await waitFor('getComputedStyle(document.querySelector(".route-view")).opacity === "1"');
+        await evaluate('[...document.images].forEach(image => image.loading = "eager")');
+        await waitFor('[...document.images].every(image => image.complete)');
+        const content = await evaluate(`({text:document.querySelector('main').innerText,descriptions:[...document.querySelectorAll('meta[name="description"],meta[property="og:description"],meta[name="twitter:description"]')].map(meta=>meta.content).join(' '),labels:[...document.querySelectorAll('[aria-label]')].map(element=>element.getAttribute('aria-label')).join(' '),width:document.documentElement.scrollWidth,headings:document.querySelectorAll('h1').length,broken:[...document.images].filter(image=>!image.naturalWidth).map(image=>image.src)})`);
+        assert.doesNotMatch(content.text, headcountCopy, `${path}: headcount in visible copy`);
+        assert.doesNotMatch(content.descriptions, headcountCopy, `${path}: headcount in SEO`);
+        assert.doesNotMatch(content.labels, headcountCopy, `${path}: headcount in accessible labels`);
+        assert.ok(content.width <= width, `${path}: overflow at ${width}px`);
+        assert.equal(content.headings, 1);
+        assert.deepEqual(content.broken, []);
+        if (path === '/team') {
+          assert.match(content.text, /Editor/);
+          assert.match(content.text, /Client & Operations Lead/);
+          assert.ok(await evaluate('[...document.querySelectorAll(".pp-team-profile .pp-index")].every(label => !/^\\d/.test(label.textContent))'));
+          assert.ok(await evaluate('[...document.querySelectorAll(".pp-team-role-visual__bar span")].every(label => !/^\\d+$/.test(label.textContent))'));
+          if (width === 390 || width === 1440) {
+            const shot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+            await writeFile(`/private/tmp/framex-studio-team-copy-${width}.png`, Buffer.from(shot.data, 'base64'));
+          }
+        }
+      }
+      console.log(`PASS studio-focused copy, SEO, accessible labels and layout: ${width}px`);
+    }
+    assert.deepEqual(errors, [], 'Browser reported runtime errors');
+    console.log('PASS no browser runtime errors');
+  } else if (reviews) {
     for(const width of [320,390,768,1440]) {
       await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<600});
       await send('Page.navigate',{url:origin});
@@ -157,7 +193,7 @@ try {
           assert.ok(await evaluate('document.querySelector("header nav a[href=\\"/team\\"]") !== null'));
         }
         if(path === '/team') {
-          assert.equal(await evaluate('document.querySelectorAll(".pp-team-profile").length'),2);
+          assert.ok(await evaluate('document.querySelectorAll(".pp-team-profile").length > 0'));
           assert.match(await evaluate('document.querySelector("main").innerText'), /Editor/);
           assert.match(await evaluate('document.querySelector("main").innerText'), /Client & Operations Lead/);
         }
@@ -286,7 +322,7 @@ try {
     for (const [path, heading] of [
       ['/services', 'Cut with purpose'], ['/work', 'A better finish'],
       ['/about', 'The room between'],
-      ['/team', 'Two roles'],
+      ['/team', 'The people behind'],
       ['/contact', 'Good work starts'], ['/', 'The difference'],
     ]) {
       await evaluate(`document.querySelector('header a[href="${path}"]').click()`);
@@ -294,7 +330,7 @@ try {
       console.log(`PASS navigation ${path}`);
     }
     await evaluate('document.querySelector("footer a[href=\\"/team\\"]").click()');
-    await waitFor('document.querySelector("h1")?.textContent.includes("Two roles")');
+    await waitFor('document.querySelector("h1")?.textContent.includes("The people behind")');
     console.log('PASS secondary navigation /team');
     await evaluate('document.querySelector("header nav a[href=\\"/work\\"]").click()');
     await waitFor('document.querySelectorAll(".project-card").length === 12');

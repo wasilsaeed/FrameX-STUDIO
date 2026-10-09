@@ -18,7 +18,7 @@ const capabilities = [
 ];
 const steps = [
   { icon: FileText, title: 'Align on the brief', copy: 'Share your files and references. We agree the scope, timing, and delivery formats before the edit begins.', tag: 'Brief / Scope / Direction' },
-  { icon: SlidersHorizontal, title: 'Edit. Review. Refine.', copy: 'Your editor shapes the work. Your point of contact gathers feedback and keeps each revision clear.', tag: 'First cut / Feedback / Finish' },
+  { icon: SlidersHorizontal, title: 'Edit. Review. Refine.', copy: 'We shape the edit, review your feedback, and refine each revision toward the agreed finish.', tag: 'First cut / Feedback / Finish' },
   { icon: Check, title: 'Ready for your audience', copy: 'Receive the agreed files, checked and organized for the platforms where your work will live.', tag: 'Quality check / Export / Handoff' },
 ];
 
@@ -123,7 +123,7 @@ export default function HomePage() {
       </section>
 
       <section className="home-process section" aria-labelledby="process-title">
-        <Reveal className="section-top"><div><p className="eyebrow">A simple process / A clear handoff</p><h2 id="process-title">A good edit starts<br />with a good connection.</h2></div><Link to="/team" className="text-link">Meet the two-person team <ArrowUpRight aria-hidden="true" /></Link></Reveal>
+        <Reveal className="section-top"><div><p className="eyebrow">A simple process / A clear handoff</p><h2 id="process-title">A good edit starts<br />with a good connection.</h2></div><Link to="/team" className="text-link">Meet the team <ArrowUpRight aria-hidden="true" /></Link></Reveal>
         <div className="process-sequence">{steps.map(({ icon: Icon, ...step }, index) => <Reveal className="process-stage" key={step.title}><div className="process-rail"><span>0{index + 1}</span><i /><Icon aria-hidden="true" /></div><h3>{step.title}</h3><p>{step.copy}</p><span className="process-tag">{step.tag}</span></Reveal>)}</div>
         <Reveal className="process-handoff"><span><i /> Direct creative work. Clear client coordination.</span><Link to="/contact" className="text-link">Let’s discuss your brief <ArrowUpRight aria-hidden="true" /></Link></Reveal>
       </section>

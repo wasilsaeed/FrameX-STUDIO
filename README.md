@@ -50,9 +50,9 @@ action. Team is also a primary navigation link; FAQ remains in the footer.
 feedback. The user-approved `sampleTestimonials` now provide three clearly labeled
 fictional examples; no real names, companies, ratings, or verification claims are used.
 Samples render only when no verified feedback exists, and disappear automatically
-when approved real reviews are supplied. The Team page describes exactly
-two roles: Editor and Client & Operations Lead. No unconfirmed personal identities
-are presented as staff.
+when approved real reviews are supplied. The Team page presents creative and
+client-coordination responsibilities without emphasizing staff count. No
+unconfirmed personal identities are presented as staff.
 
 Shared controls use one 48px/10px-radius button system. `index.css` owns design
 tokens and shared primitives; `editorial.css`, `chrome.css`, `secondary.css`, and
@@ -67,7 +67,7 @@ focus, Escape, and scroll locking.
 - Brand and contact details: `src/config/`
 - Portfolio projects: `src/data/projects.ts`
 - Services: `src/data/services.ts`
-- Exactly two team profiles: `src/data/team.ts`
+- Team profiles: `src/data/team.ts`
 - FAQs: `src/data/faq.ts`
 - Placeholder client feedback: `src/data/testimonials.ts`
 

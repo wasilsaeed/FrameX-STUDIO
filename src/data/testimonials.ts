@@ -34,6 +34,6 @@ export const sampleTestimonials: SampleTestimonial[] = [
   },
   {
     category: 'Client coordination',
-    quote: 'Having one person organize the feedback helped. We always knew which version to review, and the final files arrived in the formats we’d agreed on.',
+    quote: 'Having the feedback organized in one place helped. We always knew which version to review, and the final files arrived in the formats we’d agreed on.',
   },
 ];

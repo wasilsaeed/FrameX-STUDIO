@@ -16,7 +16,7 @@ export default function AboutPage() {
     <Seo title="The Studio" description="A focused photo and video post-production studio. Thoughtful editing, retouching, color, and sound, with clear client coordination." />
     <div className="pp-studio-page">
       <section className="pp-page-hero pp-studio-hero">
-        <Reveal className="pp-page-heading"><p className="eyebrow">THE STUDIO / BEHIND THE FINISH</p><h1>The room between<br /><em>raw & ready.</em></h1><p>FrameX brings picture, color, and sound into focus. A small, connected team with a considered approach to the finish.</p><Link className="button" to="/contact">Start a project <ArrowUpRight aria-hidden="true" /></Link></Reveal>
+        <Reveal className="pp-page-heading"><p className="eyebrow">THE STUDIO / BEHIND THE FINISH</p><h1>The room between<br /><em>raw & ready.</em></h1><p>FrameX brings picture, color, and sound into focus—with purposeful editing and attention to detail at every stage.</p><Link className="button" to="/contact">Start a project <ArrowUpRight aria-hidden="true" /></Link></Reveal>
         <Reveal className="pp-studio-monitor">
           <div className="pp-window-bar" aria-hidden="true"><span><i /> FRAMEX / FINISHING SUITE</span><span>VIEWER 01</span></div>
           <div className="pp-studio-viewer"><img src="/media/golden-hour.jpg" alt="Mountain landscape reference for a visual finishing study" loading="eager" /><span className="pp-frame-marker pp-marker-top" aria-hidden="true" /><span className="pp-frame-marker pp-marker-bottom" aria-hidden="true" /><div className="pp-viewer-label">VISUAL STUDY / COLOR + ATMOSPHERE</div></div>
@@ -28,7 +28,7 @@ export default function AboutPage() {
         <Reveal className="pp-craft-heading"><p className="eyebrow">OUR POINT OF VIEW</p><h2 id="studio-craft-heading">The idea leads.<br />The detail makes it.</h2><p>Every cut, texture, tone, and sound should help the work feel more like itself.</p></Reveal>
         <div className="pp-finishing-grid">{finishingSteps.map(([label, title, copy], index) => <Reveal className="pp-finishing-step" key={label}><span className="pp-index">0{index + 1} / {label}</span><h3>{title}</h3><p>{copy}</p></Reveal>)}</div>
       </section>
-      <section className="pp-studio-collaboration"><Reveal><p className="eyebrow">CREATIVE + COORDINATION</p><h2>Small team.<br />A connected edit.</h2></Reveal><Reveal><p>Your editor handles the craft. Your client and operations lead connects the brief, feedback, and delivery—so everyone works toward the same finish.</p><Link className="button button-outline" to="/team">Meet the team <ArrowUpRight aria-hidden="true" /></Link></Reveal></section>
+      <section className="pp-studio-collaboration"><Reveal><p className="eyebrow">CREATIVE + COORDINATION</p><h2>Considered craft.<br />Connected delivery.</h2></Reveal><Reveal><p>From the first brief to the final export, we keep creative work, feedback, and delivery aligned around your project.</p><Link className="button button-outline" to="/team">Meet the team <ArrowUpRight aria-hidden="true" /></Link></Reveal></section>
     </div>
     <CTA />
   </>;
