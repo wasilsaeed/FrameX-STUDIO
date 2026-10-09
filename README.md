@@ -25,6 +25,30 @@ and its own temporary `--user-data-dir`. The same check can target a production
 preview on port 4173. It covers the scroll effect cleanup regression: never return
 the result of `window.scrollTo` from a React effect, since it can be a Promise.
 
+Use `--audit` for all-page layout checks at 320, 390, 768, and 1440px, consistent
+48px buttons, image loading, FAQ behavior, keyboard controls, service prefill,
+and reduced-motion preferences. Inquiry success/failure UI checks use mock
+responses; they do not verify live email delivery. `--screenshots` captures
+desktop and phone previews. Run browser checks sequentially so background tab
+animation throttling does not invalidate visual checks.
+
+## Design and conversion flow
+
+The homepage has four focused sections: offer, two selected concepts, three
+service choices, and a three-step process. Repeated studio pitches, homepage
+FAQs, oversized decorative CTAs, and duplicate project galleries were removed.
+Work retains all twelve concepts; supporting pages keep details behind closed
+accordions where useful. The header has Work, Services, Studio, and one project
+action. Team and FAQ remain reachable from the footer and relevant pages.
+
+Shared controls use one 48px/10px-radius button system. `index.css` owns design
+tokens and shared primitives; `editorial.css`, `chrome.css`, `secondary.css`, and
+`portfolio.css` each own their respective layouts rather than overriding a
+legacy stylesheet. Motion includes page entrances, scroll reveals, a restrained
+hero parallax, portfolio filter transitions, hover feedback, and FAQ expansion.
+The system honors reduced-motion preferences; mobile menus support keyboard
+focus, Escape, and scroll locking.
+
 ## Updating content
 
 - Brand and contact details: `src/config/`

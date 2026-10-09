@@ -1,59 +1,63 @@
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Plus } from 'lucide-react';
+import { ArrowUpRight, Film, Image, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
 import { Seo } from '../components/common/Seo';
 import { Reveal } from '../components/common/Reveal';
 import { CTA } from '../components/common/CTA';
 import { ProjectCard } from '../components/portfolio/ProjectCard';
 import { projects } from '../data/projects';
-import { faqs } from '../data/faq';
 
-const disciplines = [
-  { number: '01', title: 'Video editing', tags: 'Brand films · YouTube · Commercials', copy: 'A considered cut. A stronger story. From the first hook to the final frame.' },
-  { number: '02', title: 'Photo retouching', tags: 'Beauty · Product · Editorial', copy: 'Natural detail, refined color, and a finish that makes the image feel complete.' },
-  { number: '03', title: 'Short-form content', tags: 'Reels · Shorts · Social campaigns', copy: 'Sharp, platform-ready edits that hold attention and keep your identity intact.' },
-  { number: '04', title: 'Color & finishing', tags: 'Color grading · Motion titles · Sound', copy: 'The final layer of intention. Cohesive tone, precise details, and the right atmosphere.' },
+const capabilities = [
+  { icon: Film, name: 'Video & motion', description: 'Edits that find the story and hold attention.', detail: 'Brand films · YouTube · Social edits', service: 'Video editing' },
+  { icon: Image, name: 'Photo & retouching', description: 'Natural detail. Consistent color. A considered finish.', detail: 'Portraits · Products · Editorial', service: 'Photo retouching' },
+  { icon: Layers, name: 'Ongoing support', description: 'A creative partner for the content you make regularly.', detail: 'Creators · Brands · Agencies', service: 'Ongoing creative support' },
+];
+const steps = [
+  { title: 'Share your idea', copy: 'Send a brief, your material, and a few references.' },
+  { title: 'Shape it together', copy: 'We agree the scope, create, and refine with your feedback.' },
+  { title: 'Ready to release', copy: 'Receive polished files in the formats you need.' },
 ];
 
 export default function HomePage() {
   const reduce = useReducedMotion();
-  const featured = projects.filter(project => [1, 2, 3, 4].includes(project.id));
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const imageY = useTransform(scrollYProgress, [0, 1], [0, 32]);
+  const featured = projects.filter(project => [2, 3].includes(project.id));
   return (
     <div className="studio-home">
       <Seo title="Every Frame, Elevated" description="Video editing, photo retouching, and creative post-production for creators, brands, and agencies. Every frame, elevated." />
-      <section className="home-hero">
-        <div className="hero-topline"><span><i aria-hidden="true" />Every frame, elevated.</span><span>Independent creative studio <span className="topline-year">/ 2026</span></span></div>
-        <div className="hero-masthead">
-          <motion.h1 initial={reduce ? false : { opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, ease: [0.2, 1, 0.3, 1] }}>We don’t just edit.<br /><em>We elevate.</em></motion.h1>
-          <motion.div className="hero-pitch" initial={reduce ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .2 }}><p>Video. Photo. A better finish.<br />Thoughtful post-production for<br className="desktop-break" /> visuals worth paying attention to.</p><Link to="/contact" className="button">Start a project <ArrowUpRight /></Link></motion.div>
+      <section className="home-hero" ref={heroRef} aria-labelledby="home-title">
+        <div className="hero-copy">
+          <motion.div initial={reduce ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .65, ease: [.22, 1, .36, 1] }}>
+            <p className="eyebrow">Creative post-production</p>
+            <h1 id="home-title">We don’t just edit.<br /><em>We elevate.</em></h1>
+            <p className="hero-description">Video editing and photo retouching for creators, brands, and agencies. A sharper story. A stronger finish.</p>
+            <div className="hero-actions"><Link to="/contact" className="button">Start a project <ArrowUpRight aria-hidden="true" /></Link><Link to="/work" className="button button-outline">Explore work <ArrowUpRight aria-hidden="true" /></Link></div>
+          </motion.div>
+          <span className="hero-signoff">Every frame, elevated.</span>
         </div>
-        <Link to="/work/midnight-drive" className="hero-scene" aria-label="Explore Midnight Drive, a cinematic automotive concept project">
-          <img src="/media/midnight-drive.jpg" alt="Silver sports car crossing a volcanic landscape at sunset — automotive concept artwork" loading="eager" decoding="async" />
-          <div className="scene-top"><span><span className="frame-mark" aria-hidden="true" />FRAMEX / IN FRAME</span><span>01 — AUTOMOTIVE</span></div>
-          <div className="scene-bottom"><div><span className="scene-category">CINEMATIC COLOR / CONCEPT WORK</span><h2>Midnight Drive</h2></div><span className="scene-link">Explore the concept <span><ArrowUpRight /></span></span></div>
-        </Link>
-        <div className="hero-footnote"><span>Post-production, with purpose.</span><div><span>Video editing</span><span>Photo retouching</span><span>Color & finishing</span></div><ArrowDownRight size={18} aria-hidden="true" /></div>
+        <motion.div className="hero-art-wrap" initial={reduce ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8, delay: reduce ? 0 : .1, ease: [.22, 1, .36, 1] }}>
+          <Link to="/work/midnight-drive" className="hero-art" aria-label="Explore Midnight Drive, an automotive concept study">
+            <motion.div className="hero-art-motion" style={{ y: reduce ? 0 : imageY }}><img src="/media/midnight-drive.jpg" alt="Silver coupe crossing a volcanic landscape at sunset — concept artwork" loading="eager" decoding="async" /></motion.div>
+            <div className="hero-art-caption"><div><span>Automotive concept</span><h2>Midnight Drive</h2></div><span className="image-action"><ArrowUpRight aria-hidden="true" /></span></div>
+          </Link>
+        </motion.div>
       </section>
-      <section className="home-intro" id="intro">
-        <p className="eyebrow">01 / THE STUDIO</p>
-        <Reveal><h2>Raw material.<br /><span>Remarkable potential.</span></h2></Reveal>
-        <Reveal className="home-intro-copy"><p>We shape footage and imagery into work that feels intentional. A precise edit, a natural retouch, a color palette that tells the right story.</p><Link className="text-link" to="/about">A little about us <ArrowUpRight /></Link></Reveal>
-      </section>
-      <section className="home-work">
-        <div className="home-section-top"><p className="eyebrow">02 / SELECTED WORK</p><span>THE ART OF THE AFTER</span></div>
-        <div className="home-section-heading"><h2>A few frames.<br /><span>A different feeling.</span></h2><Link className="text-link" to="/work">All 12 projects <ArrowUpRight /></Link></div>
-        <p className="work-disclosure">Concept studies in editing, retouching, and visual storytelling.</p>
+      <section className="home-work section" aria-labelledby="selected-title">
+        <Reveal className="section-top"><div><p className="eyebrow">Selected work</p><h2 id="selected-title">A feel for the finish.</h2></div><Link className="button button-outline" to="/work">View all work <ArrowUpRight aria-hidden="true" /></Link></Reveal>
+        <p className="collection-note">Concept studies in motion and photography. Not client commissions.</p>
         <div className="project-grid home-projects">{featured.map((project, index) => <ProjectCard project={project} key={project.id} index={index} />)}</div>
       </section>
-      <section className="home-capabilities">
-        <div className="capabilities-intro"><p className="eyebrow">03 / WHAT WE DO</p><h2>The details<br />make the<br /><em>difference.</em></h2><p>Four disciplines. One considered finish.</p><Link className="text-link" to="/services">Explore services <ArrowUpRight /></Link></div>
-        <div className="discipline-list">{disciplines.map(item => <Link to="/services" className="discipline" key={item.number}><span className="discipline-number">{item.number}</span><div><h3>{item.title}</h3><p>{item.copy}</p><span className="discipline-tags">{item.tags}</span></div><ArrowUpRight aria-hidden="true" /></Link>)}</div>
+      <section className="home-services section" aria-labelledby="capabilities-title">
+        <Reveal className="section-top"><div><p className="eyebrow">What we do</p><h2 id="capabilities-title">Your idea. Expertly finished.</h2></div><Link className="text-link" to="/services">Explore services <ArrowUpRight aria-hidden="true" /></Link></Reveal>
+        <div className="capability-grid">{capabilities.map(({ icon: Icon, ...item }) => <Reveal key={item.name}><Link to={`/contact?service=${encodeURIComponent(item.service)}`} className="capability-card"><Icon className="capability-icon" aria-hidden="true" /><h3>{item.name}</h3><p>{item.description}</p><span className="capability-detail">{item.detail}</span><span className="capability-action">Let’s talk <ArrowUpRight aria-hidden="true" /></span></Link></Reveal>)}</div>
       </section>
-      <section className="home-process">
-        <div className="process-intro"><p className="eyebrow">04 / THE WAY WE WORK</p><h2>Good work.<br /><span>Clear process.</span></h2><p>Your operations lead keeps the brief, feedback, and delivery moving. Your creative lead keeps the visual standard high.</p><Link to="/team" className="text-link">Meet the two-person team <ArrowUpRight /></Link></div>
-        <div className="process-path"><div><span>01</span><h3>Share the vision</h3><p>Send your footage, references, and the outcome you have in mind.</p></div><div><span>02</span><h3>Plan & coordinate</h3><p>We align the brief, deliverables, and a clear production timeline.</p></div><div><span>03</span><h3>Create & refine</h3><p>Focused creative decisions and an organized feedback process.</p></div><div><span>04</span><h3>Ready to go</h3><p>Polished files, organized delivery, and the formats your channels need.</p></div></div>
+      <section className="home-process section" aria-labelledby="process-title">
+        <Reveal className="section-top"><div><p className="eyebrow">A simple process</p><h2 id="process-title">From first idea to final frame.</h2></div></Reveal>
+        <div className="process-grid">{steps.map((step, index) => <Reveal key={step.title}><span className="step-number">0{index + 1}</span><h3>{step.title}</h3><p>{step.copy}</p></Reveal>)}</div>
       </section>
-      <section className="home-questions"><div><p className="eyebrow">A FEW PRACTICAL DETAILS</p><h2>Before the first cut.</h2><Link to="/faq" className="text-link">All questions <ArrowRight /></Link></div><div className="home-answers">{[faqs[5], faqs[4], faqs[6]].map(([question, answer]) => <details key={question}><summary>{question}<Plus size={18} /></summary><p>{answer}</p></details>)}</div></section>
       <CTA />
     </div>
   );

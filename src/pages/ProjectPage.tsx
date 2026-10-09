@@ -5,23 +5,41 @@ import { ProjectCard } from '../components/portfolio/ProjectCard';
 import { Seo } from '../components/common/Seo';
 import { projects } from '../data/projects';
 
+const contactServices = {
+  'Video Editing': 'Video editing',
+  'Photo Editing': 'Photo retouching',
+  Retouching: 'Photo retouching',
+  Commercial: 'Commercial editing',
+  'Social Media': 'Short-form content',
+};
+
 export default function ProjectPage() {
   const { slug } = useParams();
   const project = projects.find(p => p.slug === slug);
   if (!project) return <Navigate to="/404" replace />;
   const related = projects.filter(p => p.id !== project.id && p.filter === project.filter).slice(0, 2);
   if (related.length < 2) related.push(...projects.filter(p => p.id !== project.id && !related.includes(p)).slice(0, 2 - related.length));
+  const service = project.category.includes('Color Grading') ? 'Color grading' : contactServices[project.filter];
+  const contactHref = `/contact?service=${encodeURIComponent(service)}`;
+  const hasComparison = project.beforeImage && project.afterImage && project.beforeImage === project.afterImage;
+  const description = project.description.split(' The comparison')[0];
   return <>
     <Seo title={project.title} description={project.description} />
     <article className="case-study">
-      <header className="case-header"><Link to="/work" className="back-link"><ArrowLeft /> All work</Link><p className="eyebrow">CONCEPT PROJECT / {String(project.id).padStart(3, '0')}</p><h1>{project.title}</h1><p>{project.category}</p></header>
-      <div className="case-cover"><img src={project.thumbnail} alt={`${project.title} project cover`} /><span className="demo-badge">Concept Project / Demo Work</span></div>
-      <section className="case-overview section"><div><p className="eyebrow">THE CREATIVE INTENT</p><h2>A study in<br />visual direction.</h2></div><div><p>{project.description}</p><dl><div><dt>Focus</dt><dd>{project.services.join(' · ')}</dd></div>{project.tools.length > 0 && <div><dt>Tools</dt><dd>{project.tools.join(' · ')}</dd></div>}<div><dt>Status</dt><dd>Concept / Demo work</dd></div></dl></div></section>
-      <section className="case-reference-section"><p className="eyebrow">VISUAL REFERENCES / CONCEPT EXPLORATION</p><div className="case-gallery">{project.gallery.slice(0, 2).map((image, i) => <img key={image} src={image} alt={`${project.title} concept reference ${i + 1}`} loading="lazy" />)}</div></section>
-      {project.beforeImage && project.afterImage && <section className="section comparison"><p className="eyebrow">INTERACTIVE COLOR STUDY</p><h2>A different tone.<br />The same frame.</h2><p className="comparison-note">An illustrative color treatment of one reference image. Drag to compare.</p><BeforeAfter before={project.beforeImage} after={project.afterImage} /></section>}
-      <section className="process-note section"><p className="eyebrow">CREATIVE PROCESS</p><h2>Find the rhythm.<br />Refine the frame.</h2><p>The concept begins with mood and intent. From there, structure, color, sound, and detail are refined into one coherent finish—without overworking what already feels true.</p></section>
-      <section className="section related"><p className="eyebrow">KEEP EXPLORING</p><h2>Related work</h2><div className="project-grid">{related.map(p => <ProjectCard project={p} key={p.id} />)}</div></section>
-      <section className="inline-cta"><h2>Have a project with a similar ambition?</h2><Link to="/contact" className="button">Start a conversation <ArrowUpRight /></Link></section>
+      <section className="case-opening">
+        <header className="case-header">
+          <Link to="/work" className="case-back"><ArrowLeft aria-hidden="true" /> All work</Link>
+          <div className="case-title-row"><div><p className="eyebrow">CONCEPT STUDY</p><h1>{project.title}</h1><p className="case-category">{project.category}</p></div><Link to={contactHref} className="button">Start a project <ArrowUpRight aria-hidden="true" /></Link></div>
+        </header>
+        <div className="case-cover"><img src={project.thumbnail} alt={`${project.title} visual concept`} loading="eager" decoding="async" /></div>
+        <div className="case-overview">
+          <p className="case-description">{description}</p>
+          <dl className="case-details"><div><dt>Focus</dt><dd>{project.services.join(' · ')}</dd></div><div><dt>Format</dt><dd>{project.mediaType === 'video' ? 'Video concept' : 'Photo concept'}</dd></div><div><dt>Status</dt><dd>Illustrative study</dd></div></dl>
+        </div>
+      </section>
+      {hasComparison && <section className="case-comparison" aria-labelledby="color-study-heading"><div className="case-section-heading"><h2 id="color-study-heading">Explore the color.</h2><p>An illustrative treatment of the same photo. Drag or use the arrow keys.</p></div><BeforeAfter before={project.beforeImage!} after={project.afterImage!} /></section>}
+      <section className="case-related" aria-labelledby="related-heading"><div className="case-section-heading"><h2 id="related-heading">More concepts</h2><Link to="/work" className="text-link">All work <ArrowUpRight aria-hidden="true" /></Link></div><div className="project-grid">{related.map((p, index) => <ProjectCard project={p} index={index} key={p.id} />)}</div></section>
+      <section className="case-next"><h2>Let’s shape your next project.</h2><Link to={contactHref} className="button">Start a project <ArrowUpRight aria-hidden="true" /></Link></section>
     </article>
   </>;
 }

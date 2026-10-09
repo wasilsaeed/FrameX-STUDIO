@@ -4,14 +4,25 @@ import { CTA } from '../components/common/CTA';
 import { Reveal } from '../components/common/Reveal';
 import { Seo } from '../components/common/Seo';
 
+const principles = [
+  ['Start with the story.', 'Know the idea, the audience, and what the work should achieve.'],
+  ['Make every detail count.', 'Pacing, color, texture, and sound shape how the work feels.'],
+  ['Keep the process clear.', 'A defined scope, focused feedback, and an organized delivery.'],
+];
+
 export default function AboutPage() {
   return <>
-    <Seo title="About" description="FrameX Studio combines visual creativity with a clear, structured post-production workflow." />
+    <Seo title="About" description="A focused post-production studio bringing creative judgment and clear collaboration to video and photography." />
     <div className="studio-about">
-      <section className="page-hero editorial-hero about-hero"><p className="eyebrow">THE STUDIO</p><h1>Behind every great frame<br />is a <em>better vision.</em></h1><div className="editorial-hero-copy"><p>FrameX is a focused post-production studio. We turn footage and photography into work with a clear point of view.</p><Link className="text-link" to="/work">Explore our work <ArrowUpRight /></Link></div></section>
-      <section className="studio-story section"><Reveal className="studio-story-image"><img src="/media/frame-by-frame.jpg" alt="Film camera and production equipment" loading="lazy" /><span>FRAMEX / CREATIVE POST-PRODUCTION</span></Reveal><Reveal className="studio-story-copy"><p className="eyebrow">OUR POINT OF VIEW</p><h2>An edit should bring<br />the idea into focus.</h2><p>We find the story in the footage. The balance in the color. The small details that make an image feel complete.</p><p>Creative judgment and clear coordination sit together here—so the process feels as considered as the finished work.</p><Link className="text-link" to="/team">Meet the people behind it <ArrowUpRight /></Link></Reveal></section>
-      <section className="studio-principles section"><div className="studio-section-label"><p className="eyebrow">HOW WE THINK</p><h2>Considered at every step.</h2></div><div className="studio-principle-grid"><Reveal><span>01 / CLARITY</span><h3>Start with the story.</h3><p>Understand the idea, the audience, and what the work needs to achieve.</p></Reveal><Reveal><span>02 / CRAFT</span><h3>Make the details count.</h3><p>Pacing, texture, tone, and sound shape how the work feels.</p></Reveal><Reveal><span>03 / COLLABORATION</span><h3>Keep the process clear.</h3><p>A defined scope, considered feedback, and an organized delivery.</p></Reveal></div></section>
-      <section className="studio-audience"><p className="eyebrow">OUR COLLABORATORS</p><p>Creators. Brands. Agencies.<br /><span>People with something worth showing.</span></p></section>
+      <section className="editorial-hero about-hero">
+        <Reveal className="editorial-hero-heading"><p className="eyebrow">THE STUDIO</p><h1>A clearer<br /><em>creative vision.</em></h1></Reveal>
+        <Reveal className="editorial-hero-copy"><p>A focused post-production studio for creators, brands, and agencies. Thoughtful craft, from the first brief to the final frame.</p><Link className="button" to="/contact">Start a project <ArrowUpRight aria-hidden="true" /></Link></Reveal>
+      </section>
+      <section className="studio-story section">
+        <Reveal className="studio-story-image"><img src="/media/frame-by-frame.jpg" alt="Film camera and production equipment" loading="lazy" /></Reveal>
+        <Reveal className="studio-story-copy"><p className="eyebrow">OUR POINT OF VIEW</p><h2>Bring the idea<br />into focus.</h2><p>We find the story in your footage and the balance in your images. Editing, color, and finishing come together to make the work feel complete.</p><p>With creative and operations working closely, you get direct attention and a clear path from brief to delivery.</p><Link className="button button-outline" to="/team">Meet the team <ArrowUpRight aria-hidden="true" /></Link></Reveal>
+      </section>
+      <section className="studio-principles section" aria-label="Our three principles"><div className="studio-principle-grid">{principles.map(([title, text], index) => <Reveal className="studio-principle" key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></Reveal>)}</div></section>
     </div>
     <CTA />
   </>;

@@ -6,10 +6,10 @@ export function Reveal({ children, className = '' }: PropsWithChildren<{ classNa
   return (
     <motion.div
       className={className}
-      initial={reduce ? false : { opacity: 0, y: 30 }}
+      initial={reduce ? false : { opacity: 0, y: 24 }}
       whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
+      viewport={{ once: true, margin: '-40px', amount: 0.08 }}
+      transition={{ duration: reduce ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
