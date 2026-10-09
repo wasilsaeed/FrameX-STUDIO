@@ -6,6 +6,7 @@ import './styles/index.css';
 import './styles/editorial.css';
 import './styles/chrome.css';
 import './styles/secondary.css';
+import './styles/contact.css';
 import './styles/portfolio.css';
 import './styles/testimonials.css';
 

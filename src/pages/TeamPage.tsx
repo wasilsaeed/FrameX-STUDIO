@@ -5,23 +5,37 @@ import { CTA } from '../components/common/CTA';
 import { Reveal } from '../components/common/Reveal';
 import { team } from '../data/team';
 
+const waveform = [12, 24, 16, 34, 46, 22, 54, 38, 20, 32, 48, 28, 58, 40, 22, 36, 50, 26, 42, 18, 30, 14, 24, 10];
+
+function EditorRoleVisual() {
+  return <div className="pp-team-role-visual pp-team-role-visual--editor" aria-hidden="true">
+    <div className="pp-team-role-visual__bar"><span>PICTURE / COLOR / SOUND</span><span>01</span></div>
+    <div className="pp-team-role-visual__viewer"><img src="/media/midnight-drive.jpg" alt="" loading="lazy" /></div>
+    <div className="pp-team-role-visual__timeline"><span>V1</span><div className="pp-team-role-visual__clips"><i /><i /><i /></div><span>A1</span><svg viewBox="0 0 240 64" preserveAspectRatio="none">{waveform.map((height, index) => <rect key={index} x={index * 10 + 2} y={(64 - height) / 2} width="3" height={height} />)}</svg><i className="pp-team-role-visual__playhead" /></div>
+  </div>;
+}
+
+function OperationsRoleVisual() {
+  return <div className="pp-team-role-visual pp-team-role-visual--operations" aria-hidden="true">
+    <div className="pp-team-role-visual__bar"><span>BRIEF / REVIEW / DELIVERY</span><span>02</span></div>
+    <div className="pp-team-role-visual__handoff">{[['Brief', 'Scope + source files'], ['Review', 'Feedback + versions'], ['Delivery', 'Formats + handoff']].map(([title, detail], index) => <div className="pp-team-role-visual__stage" key={title}><span className="pp-team-role-visual__marker">0{index + 1}</span><div><span>{title}</span><small>{detail}</small></div></div>)}</div>
+    <div className="pp-team-role-visual__footer"><span>CLIENT</span><i /><span>EDITOR</span></div>
+  </div>;
+}
+
 export default function TeamPage() {
   return <>
-    <Seo title="Our Team" description="The creative and operations core behind FrameX Studio." />
-    <div className="studio-team">
-      <section className="editorial-hero team-hero">
-        <Reveal className="editorial-hero-heading"><p className="eyebrow">OUR TEAM</p><h1>Creative focus.<br /><em>Human connection.</em></h1></Reveal>
-        <Reveal className="editorial-hero-copy"><p>Two core roles, working closely. Direct creative attention and a clear point of contact from brief to delivery.</p><Link className="button" to="/contact">Start a project <ArrowUpRight aria-hidden="true" /></Link></Reveal>
+    <Seo title="Our Team" description="An editor and a client and operations lead. Two connected roles behind FrameX Studio photo and video post-production." />
+    <div className="pp-team-page">
+      <section className="pp-page-hero pp-team-hero">
+        <Reveal className="pp-page-heading"><p className="eyebrow">THE TEAM / TWO CONNECTED ROLES</p><h1>Two roles.<br /><em>One shared timeline.</em></h1></Reveal>
+        <Reveal className="pp-team-intro"><p>Your editor shapes the work. Your client and operations lead keeps the brief, feedback, and delivery connected.</p><Link className="button" to="/contact">Start a project <ArrowUpRight aria-hidden="true" /></Link></Reveal>
       </section>
-      <section className="team-grid section" aria-label="Our two core team profiles">{team.map((member, index) => {
-        const isPreview = /^\[.*\]$/.test(member.name);
-        const title = isPreview ? (index === 0 ? 'Creative lead' : 'Operations lead') : member.name;
-        return <Reveal className="team-card" key={member.role}>
-          <div className="team-image"><img src={member.image} alt={isPreview ? 'Preview portrait for the ' + title.toLowerCase() + ' profile' : member.name + ', ' + member.role} loading="lazy" />{isPreview && <span>Profile preview</span>}</div>
-          <div className="team-profile-copy"><p className="team-role">{member.role}</p><h2>{title}</h2><p>{member.bio}</p><ul>{member.responsibilities.slice(0, 3).map(item => <li key={item}>{item}</li>)}</ul>{isPreview && <p className="profile-preview-note">Name and portrait to be confirmed.</p>}</div>
-        </Reveal>;
-      })}</section>
-      <section className="team-bridge-note" aria-labelledby="team-bridge-heading"><Reveal><h2 id="team-bridge-heading">One vision.<br />Two core strengths.</h2></Reveal><Reveal><p>Creative direction and clear coordination, together. Our operations lead connects your brief, feedback, and delivery with the creative process.</p></Reveal></section>
+      <section className="pp-team-grid section" aria-label="Our two core team roles">{team.map((member, index) => <Reveal className="pp-team-profile" key={member.role}>
+        {index === 0 ? <EditorRoleVisual /> : <OperationsRoleVisual />}
+        <div className="pp-team-profile-copy"><p className="pp-index">0{index + 1} / {index === 0 ? 'CREATIVE' : 'CLIENT + OPERATIONS'}</p><h2>{member.role}</h2><p className="pp-team-bio">{member.bio}</p><ul>{member.responsibilities.map(item => <li key={item}>{item}</li>)}</ul></div>
+      </Reveal>)}</section>
+      <section className="pp-team-connection" aria-labelledby="team-connection-heading"><Reveal><h2 id="team-connection-heading">One vision.<br />Two core strengths.</h2></Reveal><Reveal><p>Our operations lead connects your brief and feedback with the creative process. Your editor turns that clarity into the final picture, color, and sound.</p><div className="pp-handoff" aria-label="Our collaborative workflow"><span>Brief</span><i aria-hidden="true" /><span>Edit</span><i aria-hidden="true" /><span>Review</span><i aria-hidden="true" /><span>Deliver</span></div></Reveal></section>
     </div>
     <CTA />
   </>;

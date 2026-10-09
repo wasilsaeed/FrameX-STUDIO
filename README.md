@@ -26,7 +26,7 @@ preview on port 4173. It covers the scroll effect cleanup regression: never retu
 the result of `window.scrollTo` from a React effect, since it can be a Promise.
 
 Use `--audit` for all-page layout checks at 320, 390, 768, and 1440px, consistent
-48px buttons, image loading, FAQ behavior, keyboard controls, service prefill,
+48px buttons, image loading, FAQ behavior, project-slider and service-tab keyboard controls, service prefill,
 and reduced-motion preferences. Inquiry success/failure UI checks use mock
 responses; they do not verify live email delivery. `--screenshots` captures
 desktop and phone previews. Run browser checks sequentially so background tab
@@ -34,23 +34,25 @@ animation throttling does not invalidate visual checks.
 
 ## Design and conversion flow
 
-The homepage has a cinematic offer, three highlighted concepts, three
-service choices, a three-step process, and a testimonial section. Repeated studio pitches, homepage
-FAQs, oversized decorative CTAs, and duplicate project galleries were removed.
+The homepage presents a branded finishing-suite hero, a six-concept horizontal
+project rail, interactive Edit / Retouch / Finish service tabs, a concise three-step
+workflow, and verified client feedback when available. The project rail supports
+swiping, horizontal scrolling, arrow buttons, and keyboard navigation; it does not
+auto-advance. “View all work” still links to the unchanged Work page.
 Work retains all twelve concepts; supporting pages keep details behind closed
 accordions where useful. The header has Work, Services, Studio, and one project
 action. Team is also a primary navigation link; FAQ remains in the footer.
 
 `clientTestimonials` in `src/data/testimonials.ts` accepts genuine approved
-feedback. Until verified records are supplied, the homepage shows a clearly
-labeled testimonial preview, not invented praise or ratings. The Team page
-retains exactly two profiles and the “One vision. Two core strengths.” bridge;
-names and portrait previews remain identified until confirmed.
+feedback. Until verified records are supplied, the homepage shows “Verified reviews
+coming soon,” not invented praise, names, or ratings. The Team page describes exactly
+two roles: Editor and Client & Operations Lead. No unconfirmed personal identities
+are presented as staff.
 
 Shared controls use one 48px/10px-radius button system. `index.css` owns design
 tokens and shared primitives; `editorial.css`, `chrome.css`, `secondary.css`, and
-`portfolio.css` each own their respective layouts rather than overriding a
-legacy stylesheet. Motion includes page entrances, scroll reveals, a restrained
+`portfolio.css` each own their respective layouts. `contact.css` contains the branded
+intake presentation. Motion includes page entrances, scroll reveals, a restrained
 hero parallax, portfolio filter transitions, hover feedback, and FAQ expansion.
 The system honors reduced-motion preferences; mobile menus support keyboard
 focus, Escape, and scroll locking.
@@ -86,13 +88,23 @@ Copy `.env.example` to `.env.local` and provide:
 - `CONTACT_TO_EMAIL`
 - `CONTACT_FROM_EMAIL` using a domain verified in Resend
 
-The current static ChatGPT Site deployment does not execute the Vercel API route. Deploy the same repository to Vercel and configure the environment variables there for live inquiry delivery.
+The current static ChatGPT Site deployment does not execute the Vercel API route.
+Live delivery is **not configured**. Hosting the handler on the current Sites host
+requires a supported Worker/Vinext migration plus runtime email configuration;
+alternatively, Vercel can execute the existing handler with those environment variables.
+The UI shows “Your query has been submitted successfully” only after the endpoint
+confirms acceptance. HTML fallbacks and delivery errors are not treated as success,
+and failed requests preserve the brief. Never expose provider keys in client code.
+
+`node --experimental-strip-types tests/contact-api.mjs` checks the email handler
+with a mocked provider. Browser form tests also use mock responses; neither test
+sends email or proves production delivery.
 
 ## Launch checklist
 
-1. Replace the placeholder email, social links, team names, and portraits.
+1. Supply real contact details, team names/photos if desired, and approved client reviews.
 2. Replace demo project media and keep accurate demo/client labels.
 3. Configure Resend and test form delivery from production.
 4. Update canonical URLs and `public/sitemap.xml` if the domain changes.
 5. Have the starter privacy policy and terms reviewed for the operating jurisdiction.
-6. Connect the production domain in Vercel and verify SSL/DNS.
+6. If adding a custom domain or changing host, verify its production configuration.

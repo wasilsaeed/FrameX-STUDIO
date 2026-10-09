@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
 const schema = z.object({
-  name: z.string().min(2).max(100),
-  email: z.string().email().max(200),
+  name: z.string().trim().min(2).max(100),
+  email: z.string().trim().email().max(200),
   company: z.string().max(120).optional(),
-  service: z.string().min(1).max(100),
+  service: z.string().trim().min(1).max(100),
   projectType: z.string().max(120).optional(),
-  description: z.string().min(20).max(5000),
+  description: z.string().trim().min(20).max(5000),
   budget: z.string().max(120).optional(),
   deadline: z.string().max(60).optional(),
   reference: z.union([z.literal(''), z.string().url().max(500)]).optional(),
@@ -33,7 +33,7 @@ export default async function handler(req: any, res: any) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_TO_EMAIL;
   const from = process.env.CONTACT_FROM_EMAIL;
-  if (!apiKey || !to || !from) return res.status(503).json({ message: 'Email delivery is not configured yet. Please contact us by email.' });
+  if (!apiKey || !to || !from) return res.status(503).json({ message: 'Inquiry delivery is not configured yet. Your message has not been sent. Please try again later.' });
 
   const data = parsed.data;
   const lines = [
@@ -53,6 +53,6 @@ export default async function handler(req: any, res: any) {
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ from, to: [to], reply_to: data.email, subject: `New FrameX inquiry — ${clean(data.service)}`, text: lines.join('\n') }),
   });
-  if (!response.ok) return res.status(502).json({ message: 'Email delivery failed. Please try again or email us directly.' });
+  if (!response.ok) return res.status(502).json({ message: 'Your message could not be delivered. Please try again later.' });
   return res.status(200).json({ message: 'Inquiry sent.' });
 }

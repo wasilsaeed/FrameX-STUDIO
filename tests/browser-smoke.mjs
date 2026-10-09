@@ -68,7 +68,8 @@ try {
       ['/', 1440, 1050, 'desktop'], ['/', 390, 844, 'mobile'],
       ['/work', 1440, 1050, 'work'], ['/contact', 1440, 1050, 'contact'],
       ['/services', 1440, 1050, 'services'], ['/about', 1440, 1050, 'about'],
-      ['/team', 390, 844, 'team-mobile'], ['/faq', 390, 844, 'faq-mobile'],
+      ['/team', 1440, 1050, 'team'], ['/team', 390, 844, 'team-mobile'], ['/faq', 390, 844, 'faq-mobile'],
+      ['/contact', 390, 844, 'contact-mobile'], ['/work/the-modern-muse', 1440, 1050, 'case-study'],
     ]) {
       await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 600 });
       await send('Page.navigate', { url: origin + path });
@@ -88,6 +89,13 @@ try {
         const detail = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
         await writeFile('/private/tmp/framex-selected-work.png', Buffer.from(detail.data, 'base64'));
         console.log('SCREENSHOT /private/tmp/framex-selected-work.png');
+        for(const [selector,name] of [['.home-services','capabilities'],['.home-process','process']]) {
+          await evaluate(`window.scrollTo({top:document.querySelector(${JSON.stringify(selector)}).offsetTop-110,behavior:"instant"})`);
+          await new Promise(resolve=>setTimeout(resolve,1200));
+          const sectionShot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+          await writeFile('/private/tmp/framex-'+name+'.png',Buffer.from(sectionShot.data,'base64'));
+          console.log('SCREENSHOT /private/tmp/framex-'+name+'.png');
+        }
         await evaluate('window.scrollTo({top:document.querySelector(".testimonials-section").offsetTop - 110,behavior:"instant"})');
         await new Promise(resolve => setTimeout(resolve, 1200));
         const closing = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
@@ -113,17 +121,61 @@ try {
         assert.deepEqual(layout.broken, [], `${path}: broken image`);
         assert.ok(layout.buttons.every(b => b.height >= 47.9 && b.radius === '10px'), `${path}: inconsistent button size or radius`);
         if (path === '/') {
-          assert.equal(await evaluate('document.querySelectorAll(".home-projects .project-card").length'),3);
+          assert.equal(await evaluate('document.querySelectorAll(".home-projects .project-card").length'),6);
           assert.ok(await evaluate('document.querySelector(".testimonials-section") !== null'));
-          if(await evaluate('document.querySelector(".testimonial-preview-panel") !== null')) assert.equal(await evaluate('document.querySelectorAll(".testimonial-quote-card").length'),0,'Do not mix placeholders with published reviews');
+          if(await evaluate('document.querySelector(".testimonials-empty") !== null')) assert.equal(await evaluate('document.querySelectorAll(".testimonial-quote-card").length'),0,'Do not mix placeholders with published reviews');
           assert.ok(await evaluate('document.querySelector("header nav a[href=\\"/team\\"]") !== null'));
         }
-        if(path === '/team') assert.equal(await evaluate('document.querySelectorAll(".team-card").length'),2);
+        if(path === '/team') {
+          assert.equal(await evaluate('document.querySelectorAll(".pp-team-profile").length'),2);
+          assert.match(await evaluate('document.querySelector("main").innerText'), /Editor/);
+          assert.match(await evaluate('document.querySelector("main").innerText'), /Client & Operations Lead/);
+        }
         if (width === 1440) summaries.push({path, words:layout.words});
       }
       console.log(`PASS all routes: ${width}px, images, headings and buttons`);
     }
     console.log('CONTENT AUDIT', JSON.stringify(summaries));
+    for(const width of [390,1440]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<600});
+      await send('Page.navigate',{url:origin});
+      await waitFor('document.querySelector("#project-slider") !== null');
+      await waitFor('document.querySelector("[aria-label=\\"Previous projects\\"]").disabled === true');
+      await evaluate('document.querySelector("[aria-label=\\"Next projects\\"]").click()');
+      await waitFor('document.querySelector("#project-slider").scrollLeft > 30');
+      await new Promise(resolve=>setTimeout(resolve,650));
+      assert.equal(await evaluate('document.querySelector("[aria-label=\\"Previous projects\\"]").disabled'),false);
+      await evaluate('document.querySelector("[aria-label=\\"Previous projects\\"]").click()');
+      await waitFor('document.querySelector("#project-slider").scrollLeft < 2');
+      await evaluate('document.querySelector("#project-slider").focus()');
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowRight',code:'ArrowRight',windowsVirtualKeyCode:39});
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'ArrowRight',code:'ArrowRight',windowsVirtualKeyCode:39});
+      await waitFor('document.querySelector("#project-slider").scrollLeft > 30');
+      await evaluate('document.querySelector("#project-slider").scrollTo({left:99999,behavior:"instant"})');
+      await waitFor('document.querySelector("[aria-label=\\"Next projects\\"]").disabled === true');
+      assert.equal(await evaluate('document.querySelector(".home-work .section-top a").getAttribute("href")'),'/work');
+      await evaluate('document.querySelector("#service-tab-1").click()');
+      await waitFor('document.querySelector("#service-panel").getAttribute("aria-labelledby") === "service-tab-1"');
+      assert.equal(await evaluate('document.querySelector("#service-tab-1").getAttribute("aria-selected")'),'true');
+      assert.match(await evaluate('document.querySelector("#service-panel a").getAttribute("href")'), /Photo%20retouching/);
+      await evaluate('document.querySelector("#service-tab-1").focus()');
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowRight',code:'ArrowRight',windowsVirtualKeyCode:39});
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'ArrowRight',code:'ArrowRight',windowsVirtualKeyCode:39});
+      await waitFor('document.querySelector("#service-panel").getAttribute("aria-labelledby") === "service-tab-2"');
+      assert.equal(await evaluate('document.activeElement.id'),'service-tab-2');
+      console.log(`PASS project carousel and service tabs: ${width}px`);
+    }
+    for(const width of [320,1440]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<600});
+      await send('Page.navigate',{url:origin+'/services'});
+      await waitFor('document.querySelectorAll(".pp-service-option").length === 5');
+      await evaluate('document.querySelectorAll(".pp-service-option").forEach(detail=>detail.open=true)');
+      await new Promise(resolve=>setTimeout(resolve,350));
+      assert.ok(await evaluate('document.documentElement.scrollWidth <= innerWidth'),'Expanded service details overflow');
+      const serviceButtons=await evaluate('[...document.querySelectorAll(".pp-service-option-body .button")].map(button=>({height:button.getBoundingClientRect().height,radius:getComputedStyle(button).borderRadius}))');
+      assert.ok(serviceButtons.every(button=>button.height>=47.9 && button.radius==='10px'),JSON.stringify(serviceButtons));
+      console.log(`PASS expanded service details: ${width}px`);
+    }
     await send('Emulation.setDeviceMetricsOverride', {width:390,height:844,deviceScaleFactor:1,mobile:true});
     await send('Page.navigate', {url:origin+'/faq'});
     await waitFor('document.querySelectorAll(".faq-item").length === 8');
@@ -148,6 +200,18 @@ try {
     assert.equal(await evaluate('document.querySelector("select[name=service]").value'), 'Photo retouching');
     assert.equal(await evaluate('document.querySelectorAll(".contact-form [required]").length'),4);
     await evaluate(`(() => {
+      for(const [name,value] of [['name','  '],['email','test@example.com'],['description',' '.repeat(30)]]) {
+        const element=document.querySelector('.contact-form [name="'+name+'"]');
+        const prototype=element.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype;
+        Object.getOwnPropertyDescriptor(prototype,'value').set.call(element,value);
+        element.dispatchEvent(new Event('input',{bubbles:true}));
+        element.dispatchEvent(new Event('change',{bubbles:true}));
+      }
+      document.querySelector('.contact-form button[type=submit]').click();
+    })()`);
+    await waitFor('document.querySelector("#name-error") !== null && document.querySelector("#description-error") !== null');
+    console.log('PASS whitespace-only form fields rejected');
+    await evaluate(`(() => {
       for(const [name,value] of [['name','Browser Test'],['email','test@example.com'],['description','A concept campaign edit for the browser validation check.']]) {
         const element=document.querySelector('.contact-form [name="'+name+'"]');
         const prototype=element.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype;
@@ -162,6 +226,10 @@ try {
     assert.match(await evaluate('document.querySelector(".form-status.error").textContent'), /not been sent/);
     await evaluate(`window.fetch=async()=>new Response(JSON.stringify({message:'Inquiry sent.'}),{status:200,headers:{'Content-Type':'application/json'}}); document.querySelector('.contact-form button[type=submit]').click()`);
     await waitFor('document.querySelector(".form-status.success") !== null');
+    await waitFor('document.activeElement?.classList.contains("form-status") === true');
+    assert.match(await evaluate('document.querySelector(".form-status.success").textContent'), /submitted successfully/);
+    await evaluate('document.querySelector(".contact-form button[type=submit]").click()');
+    await waitFor('document.querySelector(".form-status.success") === null && document.querySelector("#name-error") !== null');
     console.log('PASS service prefill and inquiry UI success/failure (mock responses, not live delivery)');
     await send('Page.navigate',{url:origin+'/work/the-modern-muse'});
     await waitFor('document.querySelector(".before-after input") !== null');
@@ -184,19 +252,19 @@ try {
     console.log(JSON.stringify(await evaluate('({ text: document.body.innerText.slice(0,1200), scrollReturn: Object.prototype.toString.call(window.scrollTo({top:0,behavior:"instant"})), hero: [...document.querySelectorAll(".hero-art, .hero-art-motion, .hero-art img, .route-view")].map(e=>({class:e.className,width:e.offsetWidth,height:e.offsetHeight,opacity:getComputedStyle(e).opacity,transform:getComputedStyle(e).transform})) })'), null, 2));
     console.log(JSON.stringify({ errors }, null, 2));
   } else {
-    assert.match(await evaluate('document.querySelector("h1")?.textContent || ""'), /We don’t just edit/);
+    assert.match(await evaluate('document.querySelector("h1")?.textContent || ""'), /The difference/);
     for (const [path, heading] of [
-      ['/services', 'Craft where it'], ['/work', 'A better finish'],
-      ['/about', 'A clearer'],
-      ['/team', 'Creative focus'],
-      ['/contact', 'Let’s create'], ['/', 'We don’t just edit'],
+      ['/services', 'Cut with purpose'], ['/work', 'A better finish'],
+      ['/about', 'The room between'],
+      ['/team', 'Two roles'],
+      ['/contact', 'Good work starts'], ['/', 'The difference'],
     ]) {
       await evaluate(`document.querySelector('header a[href="${path}"]').click()`);
       await waitFor(`document.querySelector('h1')?.textContent.includes(${JSON.stringify(heading)})`);
       console.log(`PASS navigation ${path}`);
     }
     await evaluate('document.querySelector("footer a[href=\\"/team\\"]").click()');
-    await waitFor('document.querySelector("h1")?.textContent.includes("Creative focus")');
+    await waitFor('document.querySelector("h1")?.textContent.includes("Two roles")');
     console.log('PASS secondary navigation /team');
     await evaluate('document.querySelector("header nav a[href=\\"/work\\"]").click()');
     await waitFor('document.querySelectorAll(".project-card").length === 12');

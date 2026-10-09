@@ -4,25 +4,31 @@ import { CTA } from '../components/common/CTA';
 import { Reveal } from '../components/common/Reveal';
 import { Seo } from '../components/common/Seo';
 
-const principles = [
-  ['Start with the story.', 'Know the idea, the audience, and what the work should achieve.'],
-  ['Make every detail count.', 'Pacing, color, texture, and sound shape how the work feels.'],
-  ['Keep the process clear.', 'A defined scope, focused feedback, and an organized delivery.'],
+const finishingSteps = [
+  ['EDIT', 'Find the rhythm.', 'Shape the story, the pace, and the moments that matter.'],
+  ['RETOUCH', 'Keep it natural.', 'Refine the detail while preserving texture and character.'],
+  ['GRADE', 'Set the feeling.', 'Balance the shots and give the work a cohesive look.'],
+  ['MIX', 'Let it breathe.', 'Clean the audio and make every layer work together.'],
 ];
 
 export default function AboutPage() {
   return <>
-    <Seo title="About" description="A focused post-production studio bringing creative judgment and clear collaboration to video and photography." />
-    <div className="studio-about">
-      <section className="editorial-hero about-hero">
-        <Reveal className="editorial-hero-heading"><p className="eyebrow">THE STUDIO</p><h1>A clearer<br /><em>creative vision.</em></h1></Reveal>
-        <Reveal className="editorial-hero-copy"><p>A focused post-production studio for creators, brands, and agencies. Thoughtful craft, from the first brief to the final frame.</p><Link className="button" to="/contact">Start a project <ArrowUpRight aria-hidden="true" /></Link></Reveal>
+    <Seo title="The Studio" description="A focused photo and video post-production studio. Thoughtful editing, retouching, color, and sound, with clear client coordination." />
+    <div className="pp-studio-page">
+      <section className="pp-page-hero pp-studio-hero">
+        <Reveal className="pp-page-heading"><p className="eyebrow">THE STUDIO / BEHIND THE FINISH</p><h1>The room between<br /><em>raw & ready.</em></h1><p>FrameX brings picture, color, and sound into focus. A small, connected team with a considered approach to the finish.</p><Link className="button" to="/contact">Start a project <ArrowUpRight aria-hidden="true" /></Link></Reveal>
+        <Reveal className="pp-studio-monitor">
+          <div className="pp-window-bar" aria-hidden="true"><span><i /> FRAMEX / FINISHING SUITE</span><span>VIEWER 01</span></div>
+          <div className="pp-studio-viewer"><img src="/media/golden-hour.jpg" alt="Mountain landscape reference for a visual finishing study" loading="eager" /><span className="pp-frame-marker pp-marker-top" aria-hidden="true" /><span className="pp-frame-marker pp-marker-bottom" aria-hidden="true" /><div className="pp-viewer-label">VISUAL STUDY / COLOR + ATMOSPHERE</div></div>
+          <div className="pp-scope-row" aria-hidden="true"><div className="pp-color-scope"><span>COLOR</span><svg viewBox="0 0 240 70" preserveAspectRatio="none"><path d="M0 57L10 48L22 53L35 29L47 42L59 22L71 34L84 11L96 36L109 19L122 32L135 9L148 24L159 15L172 34L185 27L198 45L210 36L224 51L240 48" /><path d="M0 62L10 55L22 44L35 49L47 30L59 39L71 18L84 34L96 17L109 28L122 9L135 30L148 11L159 26L172 20L185 43L198 32L210 47L224 42L240 59" /><path d="M0 48L10 57L22 39L35 42L47 22L59 34L71 11L84 19L96 27L109 7L122 25L135 17L148 35L159 28L172 43L185 34L198 53L210 44L224 58L240 52" /></svg></div><div className="pp-audio-scope"><span>SOUND</span><div>{[24, 42, 18, 56, 34, 66, 42, 28, 54, 36, 20, 48, 30, 58, 34, 20].map((height, index) => <i key={index} style={{ height: height + '%' }} />)}</div></div></div>
+          <div className="pp-suite-footer" aria-hidden="true"><span>EDIT / RETOUCH / GRADE / MIX</span><span>FRAMEX STUDIO</span></div>
+        </Reveal>
       </section>
-      <section className="studio-story section">
-        <Reveal className="studio-story-image"><img src="/media/frame-by-frame.jpg" alt="Film camera and production equipment" loading="lazy" /></Reveal>
-        <Reveal className="studio-story-copy"><p className="eyebrow">OUR POINT OF VIEW</p><h2>Bring the idea<br />into focus.</h2><p>We find the story in your footage and the balance in your images. Editing, color, and finishing come together to make the work feel complete.</p><p>With creative and operations working closely, you get direct attention and a clear path from brief to delivery.</p><Link className="button button-outline" to="/team">Meet the team <ArrowUpRight aria-hidden="true" /></Link></Reveal>
+      <section className="pp-studio-craft section" aria-labelledby="studio-craft-heading">
+        <Reveal className="pp-craft-heading"><p className="eyebrow">OUR POINT OF VIEW</p><h2 id="studio-craft-heading">The idea leads.<br />The detail makes it.</h2><p>Every cut, texture, tone, and sound should help the work feel more like itself.</p></Reveal>
+        <div className="pp-finishing-grid">{finishingSteps.map(([label, title, copy], index) => <Reveal className="pp-finishing-step" key={label}><span className="pp-index">0{index + 1} / {label}</span><h3>{title}</h3><p>{copy}</p></Reveal>)}</div>
       </section>
-      <section className="studio-principles section" aria-label="Our three principles"><div className="studio-principle-grid">{principles.map(([title, text], index) => <Reveal className="studio-principle" key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></Reveal>)}</div></section>
+      <section className="pp-studio-collaboration"><Reveal><p className="eyebrow">CREATIVE + COORDINATION</p><h2>Small team.<br />A connected edit.</h2></Reveal><Reveal><p>Your editor handles the craft. Your client and operations lead connects the brief, feedback, and delivery—so everyone works toward the same finish.</p><Link className="button button-outline" to="/team">Meet the team <ArrowUpRight aria-hidden="true" /></Link></Reveal></section>
     </div>
     <CTA />
   </>;
